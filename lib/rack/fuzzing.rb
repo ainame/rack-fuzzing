@@ -1,7 +1,13 @@
 require "rack/fuzzing/version"
 
 module Rack
-  module Fuzzing
-    # Your code goes here...
+  class Fuzzing
+    def initialize(app)
+      @app = app
+    end
+
+    def call(env)
+      @app.dup.call(env)
+    end
   end
 end
