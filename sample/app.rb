@@ -4,9 +4,9 @@ require 'sinatra'
 require 'sinatra/reloader'
 require 'json'
 
-use Rack::Fuzzing do |config|
-  config.condition = -> { [true, false].sample }
-  config.irregular_responses = [
+use Rack::Fuzzing::StubRandomResponse do |config|
+  config.is_stubbed = -> { [true, false].sample }
+  config.responses = [
     Rack::Response.new([{ error: "Bad Request" }.to_json], 400),
     Rack::Response.new([{ error: "Unauthorized" }.to_json], 401),
     Rack::Response.new([{ error: "Forbidden" }.to_json], 403),
@@ -17,9 +17,6 @@ use Rack::Fuzzing do |config|
     Rack::Response.new([{ error: "Service Unavailable" }.to_json], 503),
   ]
 end
-
-library = File.expand_path(File.dirname(__FILE__), '../lib/rack/fuzzing.rb')
-also_reload library
 
 get '/' do
   "hello world"
